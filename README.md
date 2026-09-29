@@ -10,27 +10,39 @@ Aplicação de linha de comando em Python que calcula estatística descritiva a 
 
 Não há dependências externas.
 
+## 👥 Autores
+
+- **Bianca Caetano Oliveira** — [GitHub ](https://github.com/BiancaaCaetano)
+- **Kaio Oliveira** — [GitHub](https://github.com/KaioOliveiradS)
+- **João Guilherme Schirm Couto** — [GitHub](https://github.com/aoocjeta)
+- **João Guilherme de Oliveira Miranda** — [GitHub](https://github.com/jguilhermemiranda)
+- **Nicolas de Souza** — [GitHub](https://github.com/NicolasLdeSouza)
 ## Requisitos e execução
 
 - Python 3.8 ou superior.
 
 ```bash
-python main.py                                # executa o programa
-python -m unittest discover -s tests -v       # executa os testes
+python main.py                         # executa o programa
+python -m unittest discover -s tests -v # executa os testes
 ```
 
 ## Uso
 
 O programa oferece duas formas de entrada:
 
-```
+```text
 [1] Inserir dados via terminal (separados por vírgula)
 [2] Carregar arquivo .csv
 ```
 
-**Opção 1:** digite números separados por vírgula (ou `;`). Exemplo: `18, 19, 22.5, 24`.
+**Opção 1:** digite números separados por vírgula (ou `;`). Exemplo:
+
+```text
+18, 19, 22.5, 24
+```
 
 **Opção 2:** informe o caminho do arquivo.
+
 - O separador (`,`, `;` ou tab) é detectado na primeira linha.
 - Se a primeira linha da coluna escolhida não for numérica, ela é tratada como cabeçalho.
 - Se houver mais de uma coluna, o programa pergunta qual usar.
@@ -39,7 +51,7 @@ O programa oferece duas formas de entrada:
 
 ### Exemplo de saída (19 valores digitados)
 
-```
+```text
 PARTE 1: DADOS NÃO AGRUPADOS (Módulo Statistics)
 Média: 24.68
 Mediana: 24.00
@@ -47,12 +59,13 @@ Moda: 22.00
 
 PARTE 3: DISTRIBUIÇÃO DE FREQUÊNCIA (COM INTERVALO)
 n = 19 | k (Sturges) = 5 | h = 3.2000
-Classe              |    fi |    Fi
-[18.00 - 21.20)     |     5 |     5
-[21.20 - 24.40)     |     5 |    10
-[24.40 - 27.60)     |     4 |    14
-[27.60 - 30.80)     |     2 |    16
-[30.80 - 34.00]     |     3 |    19
+Classe               |    fi |    Fi
+[18.00 - 21.20)      |     5 |     5
+[21.20 - 24.40)      |     5 |    10
+[24.40 - 27.60)      |     4 |    14
+[27.60 - 30.80)      |     2 |    16
+[30.80 - 34.00]      |     3 |    19
+
 Calculados via Fórmulas de Interpolação:
 -> Média: 24.82 | Mediana: 24.08
 -> Moda (Czuber): 21.20 | Moda (King): 21.20
@@ -61,11 +74,11 @@ Calculados via Fórmulas de Interpolação:
 -> Percentis: P15 = 19.82 | P22 = 20.68 | P63 = 25.98 | P70 = 27.04
 ```
 
-(A Parte 2 também é exibida, com a tabela `xi | fi | Fi`; omitida aqui por brevidade.)
+A Parte 2 também é exibida, com a tabela `xi | fi | Fi`.
 
 ## Arquitetura
 
-```
+```text
 main.py           Menu e orquestração (apenas entrada/saída)
 io_dados.py       Entrada manual e CSV, validação, exceção ErroDeDados
 parte1.py         Média, mediana e moda via statistics
@@ -75,7 +88,8 @@ formatacao.py     Formatação das tabelas e números
 tests/            Testes unitários (unittest)
 ```
 
-Princípios adotados:
+### Princípios adotados
+
 - **Separação de responsabilidades:** só `main.py` interage com o usuário; os módulos de cálculo não fazem `print` nem `input`.
 - **Restrições isoladas por módulo:** `statistics` só é importado em `parte1.py`; `parte3.py` importa apenas `math` (para `log10`).
 - **Erros tratados na fronteira:** `io_dados.py` levanta `ErroDeDados` com mensagem pronta para o usuário; `main.py` a exibe e pede a entrada novamente.
@@ -92,25 +106,29 @@ Princípios adotados:
 
 ### Parte 3: classes (`parte3.py`)
 
-**Quantidade de classes e amplitude (Sturges)**
+#### Quantidade de classes e amplitude (Sturges)
 
-```
-k = 1 + 3,322 · log10(n)     -> arredondado ao inteiro mais próximo   (numero_classes)
-h = (máximo − mínimo) / k    -> sem arredondar                        (montar_classes)
+```text
+k = 1 + 3,322 · log10(n)   -> arredondado ao inteiro mais próximo
+h = (máximo − mínimo) / k  -> sem arredondar
 ```
 
 As classes são `[li, ls)`; somente a última é fechada, `[li, ls]`, para que o valor máximo seja contado.
 
-**Média:** `x̄ = Σ(PMi · fi) / n`, onde `PMi = (li + ls) / 2` é o ponto médio da classe (`media()`).
+**Média:**
+
+`x̄ = Σ(PMi · fi) / n`
+
+onde `PMi = (li + ls) / 2` é o ponto médio da classe.
 
 **Separatrizes:** todas usam uma única função, `separatriz(classes, p)`:
 
-```
+```text
 posição = p · n / 100
 Pp = li + ((posição − F_anterior) / fi) · h
 ```
 
-onde `li`, `fi` e `h` pertencem à primeira classe cuja `Fi ≥ posição`, e `F_anterior` é a frequência acumulada da classe anterior. As demais medidas derivam dela:
+onde `li`, `fi` e `h` pertencem à primeira classe cuja `Fi ≥ posição`, e `F_anterior` é a frequência acumulada da classe anterior.
 
 | Medida | Chamada |
 |---|---|
@@ -119,11 +137,16 @@ onde `li`, `fi` e `h` pertencem à primeira classe cuja `Fi ≥ posição`, e `F
 | Decil Di | `separatriz(classes, 10·i)` |
 | Percentil Pp | `separatriz(classes, p)` |
 
-**Moda** (classe modal = primeira classe de maior `fi`; `f_ant` e `f_post` valem 0 nas bordas):
+### Moda
 
-```
-Czuber:  Mo = li + d1/(d1+d2) · h,       d1 = fi − f_ant,  d2 = fi − f_post
-King:    Mo = li + f_post/(f_ant+f_post) · h
+A classe modal é a primeira classe de maior `fi`. Nas bordas, `f_ant` e `f_post` valem `0`.
+
+```text
+Czuber: Mo = li + d1/(d1+d2) · h
+d1 = fi − f_ant
+d2 = fi − f_post
+
+King: Mo = li + f_post/(f_ant+f_post) · h
 ```
 
 Se o denominador for zero, o resultado é exibido como `indefinida`.
@@ -132,19 +155,20 @@ Se o denominador for zero, o resultado é exibido como `indefinida`.
 
 O enunciado deixa alguns pontos em aberto. Escolhas adotadas:
 
-- **k de Sturges** arredondado ao inteiro mais próximo (não `ceil`).
-- **Amplitude `h`** exata, sem arredondamento.
+- **k de Sturges:** arredondado ao inteiro mais próximo, não `ceil`.
+- **Amplitude `h`:** exata, sem arredondamento.
 - **Moda da Parte 3:** Czuber como principal; King exibida em conjunto.
-- **Separatrizes exibidas:** Q1, Q3, D2, D7, P15, P22, P63, P70, inferidas do exemplo do enunciado. Estão em constantes no topo de `main.py` e podem ser alteradas.
+- **Separatrizes exibidas:** Q1, Q3, D2, D7, P15, P22, P63 e P70, inferidas do exemplo do enunciado. Estão em constantes no topo de `main.py` e podem ser alteradas.
 - **Moda multimodal:** na Parte 1, `statistics.mode` retorna o primeiro valor mais frequente; na Parte 2, todas as modas são listadas.
 - **Dados constantes ou n < 2:** a Parte 3 é pulada com mensagem explicativa; as Partes 1 e 2 continuam normalmente.
 
 ## Testes
 
 `tests/test_estatistica.py` cobre:
+
 - consistência entre as Partes 1 e 2;
 - mediana com n ímpar e par, e moda multimodal;
-- as fórmulas de interpolação da Parte 3, com valores calculados manualmente;
+- fórmulas de interpolação da Parte 3, com valores calculados manualmente;
 - Sturges (n = 100 e n = 120 resultam em 8 classes);
 - inclusão do valor máximo na última classe;
 - entradas inválidas (texto, arquivo inexistente, CSV com linha inválida).
