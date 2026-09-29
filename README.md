@@ -12,10 +12,10 @@ Não há dependências externas.
 
 ## 👥 Autores
 
-- **Bianca Caetano** — [GitHub ](https://github.com/BiancaaCaetano)
-- **Kaio Oliveira** — [GitHub](https://github.com/KaioOliveiradS)
-- **João Guilherme Schirm** — [GitHub](https://github.com/aoocjeta)
+- **Bianca Caetano** — [GitHub](https://github.com/BiancaaCaetano)
 - **João Guilherme de Oliveira** — [GitHub](https://github.com/jguilhermemiranda)
+- **João Guilherme Schirm** — [GitHub](https://github.com/aoocjeta)
+- **Kaio Oliveira** — [GitHub](https://github.com/KaioOliveiradS)
 - **Nicolas de Souza** — [GitHub](https://github.com/NicolasLdeSouza)
 ## Requisitos e execução
 
